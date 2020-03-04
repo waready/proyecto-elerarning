@@ -1,0 +1,190 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\leccione;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;//esto para poder borrar informacion del storage
+
+class leccionesController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(){
+        // esto codigo comentado carga el api rest
+         $id = 1;
+        //  $Leccion = leccione::where('course_id', $id)->get()->load('course');
+        //  return  $Leccion;
+            $datos['videos']=leccione::where('course_id', $id)->paginate(5);
+            return view('administrar-videos.index',$datos);  
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('administrar-videos.create');
+        // return view('videoCreate');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        
+        $validatedData = [
+            'name' => 'required|string|max:150',
+            'conten' => 'required|string|max:250',
+            'video' => 'required',
+            'course_id' => 'required'
+        ];
+        $Mensaje = ["required"=>'El :attribute es requerido'];
+        $this->validate($request,$validatedData,$Mensaje);
+
+        $datosVideo=request()->all();
+        /*
+         $datosVideo = array(
+            'name'=> $request->name,
+            'conten'=> $request->conten,
+            'course_id' => 1,
+         );
+
+        
+         */
+        $datosVideo=request()->except('_token');
+
+        if($request->hasFile('video')){
+            $datosVideo['video']=$request->file('video')->store('videos','public');//guarda en la ruta carpeta storage/app/public/videos
+        }
+
+        leccione::insert($datosVideo);
+        // return response()->json($datosVideo);
+        return redirect('videos/administrar')->with('Mensaje','Video agregado con exito');
+
+
+        // $lecciones = new leccione();
+    //        $lecciones->name = $request->name;
+    //        $lecciones->conten = $request->conten;
+       //       $lecciones->course_id = 1;           
+
+    //        $file = $request->file;
+    //         //return $file;
+    //        if ($file){
+    //           $path = public_path('/storage/videos');
+    //           $fileName = time().'.'.$file->getClientOriginalExtension();
+    //           $moved = $file -> move($path, $fileName);
+    //           $lecciones->video = $fileName;
+              
+    //        }
+    //        $lecciones->save();
+    //        return redirect('videos'); 
+ 
+
+
+    //    $imagen_name = time().$file->getClientOriginalName();
+    //         \Storage::disk('users')->put($imagen_name,\File::get($file));
+    //         $data = array(
+    //             'code' => 200,
+    //             'status' => 'success',
+    //             'imagen' => $imagen_name
+    //         );
+ 
+    //    return "archivo guardado";
+
+    //    return $request;
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        // $lecciones = leccione::find($id);
+        // return $lecciones;
+        // return view('videoUpdate', compact('lecciones'));
+        $video=leccione::findOrFail($id);
+        return view('administrar-videos.edit',compact('video'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //  return "hellow ";
+        $datosVideo=request()->except(['_token','_method']);
+
+        if($request->hasFile('video')){
+
+            $video=leccione::findOrFail($id);
+
+            // Storage::delete('public/'.$video->video); //primera forma para eliminar, esto es con storage facade pero no funciona
+            unlink(storage_path('app/public/'.$video->video)); // esta si funciona
+
+            $datosVideo['video']=$request->file('video')->store('videos','public');//guarda en la ruta carpeta storage/app/public/videos
+        }
+
+        leccione::where('id','=',$id)-> update($datosVideo);
+
+        // $video=leccione::findOrFail($id);//con estas dos lineas se observa como quedo despues del update
+        // return redirect('administrar-videos.edit',compact('video'))->with('MensajeEdit','Video modificado con exito');
+
+        return redirect('videos/administrar')->with('Mensaje','Video modificado con exito');
+    }
+    public function nada(){
+        $id = 2;
+        $Leccion = leccione::where('course_id', $id)->get()->load('course');
+        return  $Leccion;  
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        // $lecciones = leccione::find($id);
+        // $lecciones->delete();
+
+        $video=leccione::findOrFail($id);
+
+        if(unlink(storage_path('app/public/'.$video->video))){
+            leccione::destroy($id);
+        }
+        else{
+            leccione::destroy($id);
+        }
+        return redirect('videos/administrar')->with('Mensaje','Video eliminado');
+        
+    }
+}
