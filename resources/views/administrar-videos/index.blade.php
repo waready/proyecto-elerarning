@@ -10,13 +10,13 @@
     @endif
     <div class="row">
             <h2 class="col-md-8">Videos del curso 
-                ...
+                ... {{$id}}
             </h2>
 
             <div class="col-md-4">
                 <a
-                href="{{url('videos/create')}}"
-                class="btn btn-success btn-lg "
+                class="btn btn-success btn-lg"
+                href="{{ route('video.create',["slug" => $id]) }}"
                 >
                 Subir Nuevo Video&nbsp;<i class="fa fa-upload"></i>
                 </a> 
@@ -51,12 +51,13 @@
                 </td>
                 <td>
                 <a 
-                    href="{{url('/videos/'.$video->id.'/edit')}}"
+                
+                    href="{{ route('video.edit',$video->id)}}"
                     class="btn btn-primary"
                     >
                     Editar
                 </a>
-                <form action="{{url('/videos/'.$video->id)}}" method="post" style="display:inline">
+                <form action="{{url('courses/lecciones/video/'.$video->id)}}" method="post" style="display:inline">
                 {{csrf_field()}}
                 {{ method_field('DELETE') }}
                 <button 

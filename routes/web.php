@@ -29,6 +29,10 @@ Route::group(['prefix' => 'courses'], function () {
 
 		Route::group(['middleware' => [sprintf('role:%s', \App\Role::TEACHER)]], function () {
 			Route::resource('courses', 'CourseController');
+
+			Route::get('/videos/administrar', 'leccionesController@index')->name("administrar");
+			Route::post('videos', 'leccionesController@store');
+			Route::resource('/lecciones/video','leccionesController');
 		});
 	});
 
@@ -65,28 +69,34 @@ Route::group(['prefix' => "solicitude"], function() {
 Route::group(['prefix' => "teacher", "middleware" => ["auth"]], function() {
 	Route::get('/courses', 'TeacherController@courses')->name('teacher.courses');
 	Route::get('/students', 'TeacherController@students')->name('teacher.students');
-	Route::post('/send_message_to_student', 'TeacherController@sendMessageToStudent')->name('teacher.send_message_to_student');
+	Route::post('/send_message_to_student', 'TeacherController@sendMessageToStudent')->name('teacher.send_message_to_student');	
 });
 
 Route::group(['prefix' => "admin", "middleware" => ['auth', sprintf("role:%s", \App\Role::ADMIN)]], function() {
+	
 	Route::get('/courses', 'AdminController@courses')->name('admin.courses');
 	Route::get('/courses_json', 'AdminController@coursesJson')->name('admin.courses_json');
 	Route::post('/courses/updateStatus', 'AdminController@updateCourseStatus');
-
-	Route::get('/students', 'AdminController@students')->name('admin.students');
-	Route::get('/students_json', 'AdminController@studentsJson')->name('admin.students_json');
-	Route::get('/teachers', 'AdminController@teachers')->name('admin.teachers');
-	Route::get('/teachers_json', 'AdminController@teachersJson')->name('admin.teachers_json');
+	
+	Route::get('/students', 'AdminController@students')->name('admin.students');//falta terminar
+	Route::get('/students_json', 'AdminController@studentsJson')->name('admin.students_json');//falta terminar
+	Route::get('/teachers', 'AdminController@teachers')->name('admin.teachers');//falta terminar
+	Route::get('/teachers_json', 'AdminController@teachersJson')->name('admin.teachers_json');//falta terminar
+	
+	
 });
 
 
-Route::get('/videos/administrar', 'leccionesController@index');
-Route::get('/videos/create','leccionesController@create');
-Route::resource('videos', 'leccionesController');
+// Route::get('/videos/administrar', 'leccionesController@index')->name("administrar");
+// Route::resource('videos', 'leccionesController');
+// Route::resource('/lecciones/video','leccionesController');
 
-Route::resource('/lecciones/video','leccionesController');
+
+
+// Route::get('/videos/create','leccionesController@create')->name("crear");
+
 Route::get('nada', 'leccionesController@nada')->name("nada");
 
 Route::get('gestor', function () {
     return view ('video');
-});
+})->name("gestor");

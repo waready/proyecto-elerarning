@@ -7,6 +7,7 @@ use App\Mail\MessageToStudent;
 use App\Student;
 use App\User;
 
+
 class TeacherController extends Controller
 {
 	public function courses () {
@@ -37,5 +38,6 @@ class TeacherController extends Controller
     		$success = false;
 	    }
     	return response()->json(['res' => $success]);
-    }
+	}
+	
 }

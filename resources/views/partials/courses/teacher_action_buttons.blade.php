@@ -1,5 +1,8 @@
 <div class="btn-group">
     @if((int) $course->status === \App\Course::PUBLISHED)
+        <a class="btn btn-success text-white" href="{{ route('administrar', ["slug" => $course->id]) }}">
+            <i class="fa fa-pencil"></i> {{ __("Agregar Contenido") }}
+        </a>
         <a class="btn btn-course" href="{{ route('courses.detail', ["slug" => $course->slug]) }}">
             <i class="fa fa-eye"></i> {{ __("Detalle") }}
         </a>
@@ -17,6 +20,7 @@
         <a class="btn btn-warning text-white" href="{{ route('courses.edit', ["slug" => $course->slug]) }}">
             <i class="fa fa-pencil"></i> {{ __("Editar curso") }}
         </a>
+        
         @include('partials.courses.btn_forms.delete')
     @else
         <a class="btn btn-danger text-white" href="#">

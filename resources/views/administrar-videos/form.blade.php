@@ -34,17 +34,8 @@
                         <input name="video" id="video" type="file" class="form-control">
                     </div>
 
-                    <div class="form-group">
-                        <label for="password-confirm" class="control-label">{{'Curso'}}</label>
-                        
-                            <select class="custom-select form-control" name="course_id">
-                            <option selected name="curso">Curso...</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                            </select>
-                        
-                    </div>
+                    
+                    <input name="course_id" id="course_id" type="number" style="display:none" value="{{$course_id}}">
 
                     <input type="submit" value="{{ $Modo=='crear' ? 'Agregar':'Modificar' }}" class="btn btn-success btn-lg ">
 

@@ -16,7 +16,7 @@
     </div>
     @endif
 
-    <form action="{{url('/videos')}}"
+    <form action="{{route('video.store')}}"
     method="post"
     enctype="multipart/form-data"
     class="form-horizontal"

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+
 use App\leccione;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;//esto para poder borrar informacion del storage
+use App\Teacher;
+use App\Course;
 
 class leccionesController extends Controller
 {
@@ -13,13 +16,39 @@ class leccionesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(){
+    public function index(Request $request){
         // esto codigo comentado carga el api rest
-         $id = 1;
+         
         //  $Leccion = leccione::where('course_id', $id)->get()->load('course');
         //  return  $Leccion;
-            $datos['videos']=leccione::where('course_id', $id)->paginate(5);
-            return view('administrar-videos.index',$datos);  
+
+        // $id=1;
+        // $Leccion = leccione::where('course_id', $id)->get()->load('course');
+        
+        // // $Leccion[0]->course->teacher_id;
+        // $leccion_teacher = $Leccion[0]->course->teacher_id;
+        // $auth_teacher = auth()->user()->teacher->id ;
+        //     if( $leccion_teacher == $auth_teacher){
+        //         return "si es su curso puede entrar";
+        //     }
+        //     else{
+        //         return "jodete";
+        //     }
+
+
+        $id = $request->slug;
+        $datos['videos']=leccione::where('course_id', $request->slug)->paginate(5);
+        
+        $cursos = Course::find($id);
+
+        if($cursos->teacher_id==auth()->user()->teacher->id){
+            return view('administrar-videos.index',$datos,compact('id'));
+        }
+        else{
+            return ['creador' => 'No eres creador del contenido'];
+        }
+
+        // return $cursos;
     }
 
     /**
@@ -27,9 +56,10 @@ class leccionesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('administrar-videos.create');
+        $course_id = $request->slug; 
+        return view('administrar-videos.create', compact('course_id'));
         // return view('videoCreate');
     }
 
@@ -69,7 +99,7 @@ class leccionesController extends Controller
 
         leccione::insert($datosVideo);
         // return response()->json($datosVideo);
-        return redirect('videos/administrar')->with('Mensaje','Video agregado con exito');
+        return redirect('/courses/videos/administrar?slug='.$request->course_id)->with('Mensaje','Video agregado con exito');
 
 
         // $lecciones = new leccione();
@@ -127,7 +157,8 @@ class leccionesController extends Controller
         // return $lecciones;
         // return view('videoUpdate', compact('lecciones'));
         $video=leccione::findOrFail($id);
-        return view('administrar-videos.edit',compact('video'));
+        //return $video;
+       return view('administrar-videos.edit',compact('video'));
     }
 
     /**
@@ -141,7 +172,7 @@ class leccionesController extends Controller
     {
         //  return "hellow ";
         $datosVideo=request()->except(['_token','_method']);
-
+        $video=leccione::findOrFail($id);
         if($request->hasFile('video')){
 
             $video=leccione::findOrFail($id);
@@ -157,12 +188,18 @@ class leccionesController extends Controller
         // $video=leccione::findOrFail($id);//con estas dos lineas se observa como quedo despues del update
         // return redirect('administrar-videos.edit',compact('video'))->with('MensajeEdit','Video modificado con exito');
 
-        return redirect('videos/administrar')->with('Mensaje','Video modificado con exito');
+        return redirect('/courses/videos/administrar?slug='.$video->course_id)->with('Mensaje','Video modificado con exito');
     }
-    public function nada(){
-        $id = 2;
+    public function nada(Request $request){
+        $id=5;
+        // $id = $request->slug;
+        // $cursos = leccione::find($id);
+
         $Leccion = leccione::where('course_id', $id)->get()->load('course');
-        return  $Leccion;  
+        
+        // return redirect('gestor....');
+        return $Leccion; 
+        // return $id;  
     }
 
     /**
@@ -184,7 +221,7 @@ class leccionesController extends Controller
         else{
             leccione::destroy($id);
         }
-        return redirect('videos/administrar')->with('Mensaje','Video eliminado');
+        return redirect('/courses/videos/administrar?slug='.$video->course_id)->with('Mensaje','Video eliminado');
         
     }
 }
