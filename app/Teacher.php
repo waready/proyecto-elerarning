@@ -27,7 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Teacher extends Model
 {
-	protected $fillable = ['user_id'];
+	protected $fillable = ['user_id','title','biography','website_url'];
+	
 
 	public function courses () {
 		return $this->hasMany(Course::class);

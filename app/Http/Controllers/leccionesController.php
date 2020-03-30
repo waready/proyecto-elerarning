@@ -45,7 +45,8 @@ class leccionesController extends Controller
             return view('administrar-videos.index',$datos,compact('id'));
         }
         else{
-            return ['creador' => 'No eres creador del contenido'];
+            // return ['creador' => 'No eres creador del contenido'];
+            return abort(404);
         }
 
         // return $cursos;

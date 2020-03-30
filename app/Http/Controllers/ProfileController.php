@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Rules\StrengthPassword;
 
+
 class ProfileController extends Controller
 {
     public function index () {
     	$user = auth()->user()->load('socialAccount');
     	return view('profile.index', compact('user'));
-    }
+	}
+	
 
     public function update () {
 		$this->validate(request(), [

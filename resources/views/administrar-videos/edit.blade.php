@@ -50,10 +50,10 @@
 
                     
                         <a
-                        href="{{url('videos/administrar')}}"
+                        href="{{url('/courses/videos/administrar?slug='.$video->course_id)}}"
                         class="btn btn-primary btn-lg "
                         >
-                        Regresar&nbsp;<i class="fa fa-upload"></i>
+                        Regresar&nbsp;
                         </a> 
                     
                     <br>

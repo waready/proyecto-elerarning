@@ -36,6 +36,7 @@
                                         required
                                         autofocus
                                     />
+                                
 
                                     @if($errors->has('email'))
                                         <span class="invalid-feedback">
@@ -108,6 +109,62 @@
                         <div class="card-body">
                             <form action="{{ route('solicitude.teacher') }}" method="POST">
                                 @csrf
+
+                                <div class="form-group row">
+                                <label
+                                    for="title"
+                                    class="col-md-4 col-form-label text-md-right"
+                                >
+                                    {{ __("Titulo") }}
+                                </label>
+
+                                <div class="col-md-6">
+                                    <input
+                                        id="title"
+                                        type="text"
+                                        class="form-control"
+                                        name="title"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label
+                                    for="biography"
+                                    class="col-md-4 col-form-label text-md-right"
+                                >
+                                    {{ __("Biografia") }}
+                                </label>
+
+                                <div class="col-md-6">
+                                    <input
+                                        id="biography"
+                                        type="text"
+                                        class="form-control"
+                                        name="biography"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label
+                                    for="website_url"
+                                    class="col-md-4 col-form-label text-md-right"
+                                >
+                                    {{ __("Sitio Web") }}
+                                </label>
+
+                                <div class="col-md-6">
+                                    <input
+                                        id="website_url"
+                                        type="text"
+                                        class="form-control"
+                                        name="website_url"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                                
                                 <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fa fa-graduation-cap"></i> {{ __("Solicitar") }}
                                 </button>
